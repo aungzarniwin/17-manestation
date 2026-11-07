@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>369 Manifestation & 21-Day Habit Tracker</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mystic: {
+                            bg: '#0f0a1c',
+                            card: '#18112b',
+                            border: '#322554',
+                            gold: '#f39c12',
+                            purpleglow: '#9b59b6',
+                            text: '#f3f4f6',
+                            muted: '#9ca3af'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Padauk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f0a1c;
+            color: #f3f4f6;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0a1c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #322554;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9b59b6;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #f39c12, #e67e22, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        .checkbox-custom:checked + div {
+            background-color: #f39c12;
+            border-color: #f39c12;
+        }
+        .checkbox-custom:checked + div svg {
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#f39c12] selection:text-black">
+
+    <!-- Header Section -->
+    <header class="border-b border-[#322554] bg-[#18112b]/90 backdrop-blur sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl gold-gradient-bg flex items-center justify-center text-black font-extrabold text-lg shadow-lg shadow-[#f39c12]/30">
+                    369
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-extrabold gold-gradient-text tracking-wide">MANIFESTATION</h1>
+                    <p class="text-xs text-[#9ca3af]">စက္ကူဝါ ၂၁ရက် စွမ်းအားနည်းလမ်း</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Streak Badge -->
+                <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#251942] border border-[#f39c12]/40 text-amber-400 font-bold text-sm shadow-inner">
+                    <i class="fa-solid fa-fire text-orange-500 animate-pulse"></i>
+                    <span id="header-streak">1</span>
+                </div>
+                <button id="reset-btn" onclick="confirmReset()" class="px-3 py-1.5 text-xs font-semibold bg-[#251942] text-rose-400 hover:bg-rose-950 border border-[#322554] hover:border-rose-500/50 rounded-xl transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span class="hidden sm:inline">Reset</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-6 w-full space-y-6">
+
+        <!-- Top Dashboard Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- Current Streak Card -->
+            <div class="bg-[#18112b] border border-[#322554] rounded-2xl p-4 flex items-center justify-between shadow-md hover:border-[#f39c12]/50 transition-all">
+                <div class="space-y-1">
+                    <p class="text-xs font-medium text-[#9ca3af]">Current Streak</p>
+                    <div class="flex items-baseline gap-2">
+                        <span id="current-streak" class="text-3xl font-extrabold text-white">0</span>
+                        <span class="text-xs text-[#9ca3af]">days</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-2xl text-orange-400">
+                    🔥
+                </div>
+            </div>
+
+            <!-- Longest Streak Card -->
+            <div class="bg-[#18112b] border border-[#322554] rounded-2xl p-4 flex items-center justify-between shadow-md hover:border-[#f39c12]/50 transition-all">
+                <div class="space-y-1">
+                    <p class="text-xs font-medium text-[#9ca3af]">Longest Streak</p>
+                    <div class="flex items-baseline gap-2">
+                        <span id="best-streak" class="text-3xl font-extrabold text-white">0</span>
+                        <span class="text-xs text-[#9ca3af]">days</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl text-amber-400">
+                    🏆
+                </div>
+            </div>
+
+            <!-- Total Completion Rate -->
+            <div class="bg-[#18112b] border border-[#322554] rounded-2xl p-4 flex items-center justify-between shadow-md hover:border-[#f39c12]/50 transition-all">
+                <div class="space-y-1">
+                    <p class="text-xs font-medium text-[#9ca3af]">Total Completion</p>
+                    <div class="flex items-baseline gap-2">
+                        <span id="total-completion-percent" class="text-3xl font-extrabold gold-gradient-text">0%</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl text-purple-400">
+                    ✨
+                </div>
+            </div>
+
+            <!-- Total Tasks Done -->
+            <div class="bg-[#18112b] border border-[#322554] rounded-2xl p-4 flex items-center justify-between shadow-md hover:border-[#f39c12]/50 transition-all">
+                <div class="space-y-1">
+                    <p class="text-xs font-medium text-[#9ca3af]">Completed Tasks</p>
+                    <div class="flex items-baseline gap-2">
+                        <span id="total-tasks-done" class="text-3xl font-extrabold text-white">0</span>
+                        <span class="text-xs text-[#9ca3af]">/ 357</span>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-2xl text-emerald-400">
+                    ✅
+                </div>
+            </div>
+        </div>
+
+        <!-- Contribution Heatmap Card -->
+        <div class="bg-[#18112b] border border-[#322554] rounded-2xl p-5 shadow-lg">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-[#322554] gap-2">
+                <div>
+                    <h2 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-[#f39c12]"></i>
+                        ၂၁-ရက် တိုးတက်မှု မှတ်တမ်း (Heatmap)
+                    </h2>
+                    <p class="text-xs text-[#9ca3af]">နေ့စဉ် ပြီးမြောက်မှု အခြေအနေများ</p>
+                </div>
+
+                <!-- Legend -->
+                <div class="flex items-center gap-1.5 text-xs text-[#9ca3af]">
+                    <span>နည်း</span>
+                    <div class="w-3.5 h-3.5 rounded-sm bg-[#18112b] border border-[#322554]"></div>
+                    <div class="w-3.5 h-3.5 rounded-sm bg-[#2e1c3a] border border-[#4a2e5d]"></div>
+                    <div class="w-3.5 h-3.5 rounded-sm bg-[#7b3f00]"></div>
+                    <div class="w-3.5 h-3.5 rounded-sm bg-[#d35400]"></div>
+                    <div class="w-3.5 h-3.5 rounded-sm gold-gradient-bg shadow-sm"></div>
+                    <span>များ</span>
+                </div>
+            </div>
+
+            <!-- Heatmap Grid (21 Days Layout) -->
+            <div id="heatmap-grid" class="grid grid-cols-7 gap-2 sm:gap-3 my-2">
+                <!-- Dynamic Grid Items -->
+            </div>
+        </div>
+
+        <!-- Day Selector & Affirmation Checklist Section -->
+    <div class="bg-[#18112b] border border-[#322554] rounded-2xl shadow-xl overflow-hidden">
+
+        <!-- Day Header & Selector Bar -->
+        <div class="p-5 border-b border-[#322554] bg-[#201538] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="px-3.5 py-1.5 rounded-xl bg-[#f39c12]/20 border border-[#f39c12]/40 text-amber-400 font-bold text-sm" id="selected-day-badge">
+                    Day 1
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white" id="selected-day-title">နေ့စဉ် စာသားများ ပြင်ဆင်ရန်</h3>
+                    <p class="text-xs text-[#9ca3af]" id="selected-day-subtitle">မနက် (၃ ကြိမ်)၊ နေ့လယ် (၆ ကြိမ်)၊ ည (၉ ကြိမ်) အလိုက် ဖြည့်စွက်ပါ</p>
+                </div>
+            </div>
+
+            <!-- Day Selector Navigation -->
+            <div class="flex items-center gap-2">
+                <button onclick="changeDay(-1)" id="prev-day-btn" class="p-2 rounded-xl bg-[#281c44] border border-[#322554] hover:border-[#f39c12] text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+
+                <select id="day-select" onchange="selectDay(parseInt(this.value))" class="bg-[#281c44] border border-[#322554] text-white text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-[#f39c12]">
+                    <!-- Dynamic options with real dates -->
+                </select>
+
+                <button onclick="changeDay(1)" id="next-day-btn" class="p-2 rounded-xl bg-[#281c44] border border-[#322554] hover:border-[#f39c12] text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Single Day Progress Bar -->
+            <div class="px-5 py-3.5 border-b border-[#322554] bg-[#18112b]/60">
+                <div class="flex justify-between items-center text-xs mb-1.5 font-semibold">
+                    <span class="text-[#9ca3af]" id="day-progress-text">0 / 17 completed</span>
+                    <span class="text-amber-400" id="day-progress-percent">0%</span>
+                </div>
+                <div class="w-full h-2.5 bg-[#281c44] rounded-full overflow-hidden border border-[#322554]">
+                    <div id="day-progress-bar" class="h-full gold-gradient-bg transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <!-- Quick Action Toolbar -->
+            <div class="px-5 py-2.5 bg-[#18112b] border-b border-[#322554] flex items-center justify-between text-xs">
+                <span class="text-[#9ca3af]">စာသားများကို Check လုပ်၍ မှတ်တမ်းတင်ပါ</span>
+                <div class="flex gap-3">
+                    <button onclick="checkAllCurrentDay()" class="text-amber-400 hover:underline flex items-center gap-1 font-medium">
+                        <i class="fa-solid fa-check-double"></i> အားလုံးရွေးမည်
+                    </button>
+                    <span class="text-[#322554]">|</span>
+                    <button onclick="uncheckAllCurrentDay()" class="text-[#9ca3af] hover:text-white hover:underline flex items-center gap-1 font-medium">
+                        <i class="fa-solid fa-xmark"></i> အားလုံးဖျက်မည်
+                    </button>
+                </div>
+            </div>
+
+            <!-- 17 Checklist Tasks Container (Single Daily List) -->
+            <div class="p-5">
+                <div class="flex items-center gap-2 pb-3 mb-4 border-b border-[#322554]">
+                    <span class="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+                        <i class="fa-solid fa-list-check mr-1.5"></i> ၁၇ ချက် အဓိဋ္ဌာန်စာသားများ (တစ်ရက်စာ)
+                    </span>
+                    <span class="text-xs text-[#9ca3af]">နေ့စဉ် ၁၇ ချက်လုံးကို ဖတ်ရှုပြီး တစ်ခါတည်း မှတ်တမ်းတင်ရန်</span>
+                </div>
+                <div id="all-tasks-container" class="grid grid-cols-1 gap-3"></div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-[#322554] bg-[#18112b] py-4 mt-8">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-[#9ca3af]">
+            <p>369 Manifestation & 21-Day Habit Challenge • Mystic Gold Edition</p>
+        </div>
+    </footer>
+
+    <!-- Confirmation Modal for Reset -->
+    <div id="reset-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#18112b] border border-[#322554] rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <div class="flex items-center gap-3 text-rose-400">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                <h4 class="font-bold text-lg text-white">ဒေတာအားလုံး ဖျက်မလား?</h4>
+            </div>
+            <p class="text-sm text-[#9ca3af]">
+                ဤလုပ်ဆောင်ချက်သည် သင်၏ ၂၁-ရက် တိုးတက်မှု မှတ်တမ်းများနှင့် Checklist အားလုံးကို အစမှ ပြန်စစေပါမည်။
+            </p>
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeResetModal()" class="px-4 py-2 text-xs font-semibold bg-[#281c44] text-white hover:bg-[#322554] rounded-xl">
+                    မလုပ်တော့ပါ
+                </button>
+                <button onclick="executeReset()" class="px-4 py-2 text-xs font-semibold bg-rose-600 text-white hover:bg-rose-700 rounded-xl">
+                    ဟုတ်ကဲ့၊ အစမှစမည်
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Exact 17 Affirmation Statements provided by user
+        const DEFAULT_TASKS = [
+            { id: 1, text: "၁။ ကျွနုပ်သည် ကာယကံ၊ ဝစီကံ၊ မနောကံ တို့ဖြင့် အမိအဖ ဆရာသမားတို့အပေါ်၌ သိ၍ဖြစ်စေ မသိ၍ဖြစ်စေ ' ပြစ်မှားထားမိပါက ခွင့်လွှတ်ပေးပါရန် တောင်းပန်အပ်ပါသည်။ယနေ့မှစပြီး ကံများပွင့် ဉာဏ်များပွင့်ပြီး ' စီးပွားဥစ္စာများ တိုးပါစေသော်。" },
+            { id: 2, text: "၂။ 972999 AC ကျွနုပ်သည် စိတ်ချမ်းသာပြီး ကြွယ်ဝချမ်းသာစေသော Abundance coach ma Thandar မိသားစုဝင်အဖြစ် ခံယူလိုက်ပါပြီ。" },
+            { id: 3, text: "၃။ 972999 AC Abundance coach Ma Thandar မိသားစုဝင် ဖြစ်သောကြောင့် စိတ်ချမ်းသာပြီး အန္တရာယ်များကင်းနေပါပြီ。" },
+            { id: 4, text: "၄။ နေ့စဉ်စိတ်တွေ အေးချမ်းပြီး ကျန်းမာလှပနေပါပြီ。" },
+            { id: 5, text: "၅။ ငွေရှာရတာ အရမ်းလွယ်ကူနေပါပြီ。" },
+            { id: 6, text: "၆။ ကြွယ်ဝချမ်းသာမှုတို့ကို လွယ်ကူစွာ ညှို့ယူနိုင်ပါပြီ。" },
+            { id: 7, text: "၇။ 972999 AC Abundance coach Ma Thandar မိသားစုဝင်ဖြစ်သောကြောင့် အပေါဆုံးက ငွေဖြစ်နေပါပြီ。" },
+            { id: 8, text: "၈။ 972999 AC Abundance coach ma Thandar မိသားစုဝင်ဖြစ်သောကြောင့် အပေါဆုံးကစိန်ရွှေရတနာ ဖြစ်နေပါပြီ。" },
+            { id: 9, text: "၉ .သုံးလိုက်သမျှ ငွေ ပိုက်ဆံ တိုင်းက ဆပွားတိုးပြီး ပြန်လာကြရသည်။" },
+            { id: 10, text: "၁၀။ ငွေတွေကပါ မျှော်မှန်းထားတဲ့နေရာကရော l မမျှော်မှန်းထားတဲ့နေရာကရော အလုံးလိုက် အလိပ်လိုက် ဝင်လာနေပါပြီ。" },
+            { id: 11, text: "၁၁။ အလုပ်တွေလုပ်ရတာအရမ်းလွယ်ကူလာပါပြီ。" },
+            { id: 12, text: "၁၂။ ဝင်ငွေတွေ တစ်နေ့တစ်ခြားများသည်ထက် များလာနေပါပြီ。" },
+            { id: 13, text: "၁၃။ ဘာလေးပဲ လိုချင်လိုချင် လွယ်လွယ်ကူကူနဲ့ရတဲ့သူ ဖြစ်နေပါပြီ。" },
+            { id: 14, text: "၁၄။ အတင်းမပြောပါ။စိတ်ထားကောင်းတယ်။ အမြဲကြိုးစားတယ်။ဒါ့ကြောင့် ကြွယ်ဝချမ်းသာမှုတို့နဲ့ထိုက်တန်တဲ့သူ ဖြစ်နေပါပြီ。" },
+            { id: 15, text: "၁၅။ စိတ်တွေ အေးချမ်းနေပါပြီ。" },
+            { id: 16, text: "၁၆။ ပြည့်စုံကြွယ်ဝ လိုတရနေပါပြီ。" },
+            { id: 17, text: "၁၇။ 972999 AC Abundance coach Ma Thandar မိသားစုဝင်ဖြစ်သောကြောင့် အမိ-အဖ-ဆရာသမား တွေနဲ့ အကျိုးရှိတဲ့ နေရာတွေကို များစွာ လှူဒါန်းနှိုင်နေပါပြီ။ Thank you. Thank you. Thank you." }
+        ];
+
+        const TOTAL_DAYS = 21;
+        const TOTAL_TASKS_PER_DAY = 17;
+        const STORAGE_KEY = 'mystic_369_21day_tracker_v2';
+
+        let selectedDay = 1;
+        let appData = {};
+
+        // Helper to get formatted date for Day N (Day 1 = Today)
+        function getDayDate(dayIndex) {
+            const d = new Date();
+            d.setDate(d.getDate() + (dayIndex - 1));
+            return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function initApp() {
+            loadData();
+            buildDaySelectDropdown();
+            renderHeatmap();
+            renderSelectedDay();
+            updateDashboardStats();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch(e) {
+                    appData = createDefaultState();
+                }
+            } else {
+                appData = createDefaultState();
+            }
+        }
+
+        function createDefaultState() {
+            const data = {};
+            for (let i = 1; i <= TOTAL_DAYS; i++) {
+                data[i] = []; 
+            }
+            return data;
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function buildDaySelectDropdown() {
+            const select = document.getElementById('day-select');
+            select.innerHTML = '';
+            for (let i = 1; i <= TOTAL_DAYS; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = `Day ${i} (${getDayDate(i)})`;
+                select.appendChild(opt);
+            }
+            select.value = selectedDay;
+        }
+
+        function getHeatmapColorClass(count) {
+            if (count === 0) return 'bg-[#18112b] border-[#322554] text-[#9ca3af]';
+            if (count <= 4) return 'bg-[#2e1c3a] border-[#4a2e5d] text-purple-200';
+            if (count <= 9) return 'bg-[#7b3f00] border-[#964b00] text-amber-200';
+            if (count <= 14) return 'bg-[#d35400] border-[#e67e22] text-white font-bold';
+            return 'gold-gradient-bg border-[#f39c12] text-black font-extrabold shadow-md shadow-[#f39c12]/30';
+        }
+
+        function renderHeatmap() {
+            const grid = document.getElementById('heatmap-grid');
+            grid.innerHTML = '';
+
+            for (let day = 1; day <= TOTAL_DAYS; day++) {
+                const completedCount = (appData[day] || []).length;
+                const isSelected = day === selectedDay;
+                const colorClass = getHeatmapColorClass(completedCount);
+                const dayDateStr = getDayDate(day);
+
+                const cell = document.createElement('button');
+                cell.className = `p-3 sm:p-4 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all relative group cursor-pointer ${colorClass} ${
+                    isSelected ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0f0a1c] scale-105 z-10' : 'hover:scale-102'
+                }`;
+                cell.onclick = () => selectDay(day);
+
+                cell.innerHTML = `
+                    <span class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider opacity-80">Day ${day}</span>
+                    <span class="text-xs sm:text-sm font-bold opacity-90">${dayDateStr}</span>
+                    <span class="text-[10px] opacity-90 mt-1">${completedCount}/${TOTAL_TASKS_PER_DAY}</span>
+                    
+                    <div class="absolute bottom-full mb-2 hidden group-hover:block bg-[#281c44] text-white text-xs px-2.5 py-1.5 rounded-xl shadow-xl border border-[#322554] whitespace-nowrap z-20 pointer-events-none">
+                        Day ${day} (${dayDateStr}): ${completedCount} / 17 ပြီးမြောက်ပြီ
+                    </div>
+                `;
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function selectDay(day) {
+            if (day < 1 || day > TOTAL_DAYS) return;
+            selectedDay = day;
+            document.getElementById('day-select').value = day;
+            
+            document.getElementById('prev-day-btn').disabled = (selectedDay === 1);
+            document.getElementById('next-day-btn').disabled = (selectedDay === TOTAL_DAYS);
+
+            renderHeatmap();
+            renderSelectedDay();
+        }
+
+        function changeDay(delta) {
+            selectDay(selectedDay + delta);
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#f39c12', '#9b59b6', '#e74c3c', '#f1c40f']
+                });
+            }
+        }
+
+        function renderSelectedDay() {
+            const dayDateStr = getDayDate(selectedDay);
+            document.getElementById('selected-day-badge').textContent = `Day ${selectedDay} • ${dayDateStr}`;
+            document.getElementById('selected-day-title').textContent = `Day ${selectedDay} Affirmations`;
+            document.getElementById('selected-day-subtitle').textContent = `ရက်စွဲ: ${dayDateStr} - ၁၇ ချက်လုံးကို ဖတ်ရှုပြီး မှတ်တမ်းတင်ပါ`;
+
+            const completedTasks = appData[selectedDay] || [];
+            const completedCount = completedTasks.length;
+            const percentage = Math.round((completedCount / TOTAL_TASKS_PER_DAY) * 100);
+
+            document.getElementById('day-progress-text').textContent = `${completedCount} / ${TOTAL_TASKS_PER_DAY} ပြီးမြောက်သည်`;
+            document.getElementById('day-progress-percent').textContent = `${percentage}%`;
+            document.getElementById('day-progress-bar').style.width = `${percentage}%`;
+
+            renderAllTasks(completedTasks);
+        }
+
+        function renderAllTasks(completedTasks) {
+            const container = document.getElementById('all-tasks-container');
+            container.innerHTML = '';
+
+            DEFAULT_TASKS.forEach(task => {
+                const isChecked = completedTasks.includes(task.id);
+
+                const item = document.createElement('label');
+                item.className = `flex items-start justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                    isChecked 
+                        ? 'bg-[#2a1b3d]/60 border-[#f39c12]/50 text-white shadow-md' 
+                        : 'bg-[#201538]/50 border-[#322554] text-[#f3f4f6] hover:bg-[#281c44] hover:border-[#9b59b6]/50'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-start gap-3 pr-2">
+                        <div class="relative flex items-center mt-0.5">
+                            <input type="checkbox" 
+                                class="checkbox-custom sr-only" 
+                                ${isChecked ? 'checked' : ''} 
+                                onchange="toggleTask(${task.id})">
+                            <div class="w-5 h-5 rounded-lg border border-[#322554] bg-[#0f0a1c] flex items-center justify-center transition-colors">
+                                <svg class="w-3.5 h-3.5 text-black hidden pointer-events-none font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium leading-relaxed ${isChecked ? 'line-through text-[#9ca3af]' : ''}">
+                            ${task.text}
+                        </span>
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function toggleTask(taskId) {
+            let currentList = appData[selectedDay] || [];
+            const wasFullBefore = currentList.length === TOTAL_TASKS_PER_DAY;
+
+            if (currentList.includes(taskId)) {
+                currentList = currentList.filter(id => id !== taskId);
+            } else {
+                currentList.push(taskId);
+            }
+            appData[selectedDay] = currentList;
+
+            if (!wasFullBefore && currentList.length === TOTAL_TASKS_PER_DAY) {
+                triggerConfetti();
+            }
+
+            saveData();
+            renderSelectedDay();
+            renderHeatmap();
+            updateDashboardStats();
+        }
+
+        function checkAllCurrentDay() {
+            const wasFullBefore = (appData[selectedDay] || []).length === TOTAL_TASKS_PER_DAY;
+            appData[selectedDay] = DEFAULT_TASKS.map(t => t.id);
+            
+            if (!wasFullBefore) {
+                triggerConfetti();
+            }
+
+            saveData();
+            renderSelectedDay();
+            renderHeatmap();
+            updateDashboardStats();
+        }
+
+        function uncheckAllCurrentDay() {
+            appData[selectedDay] = [];
+            saveData();
+            renderSelectedDay();
+            renderHeatmap();
+            updateDashboardStats();
+        }
+
+        function updateDashboardStats() {
+            let totalTasksDone = 0;
+            let bestStreak = 0;
+            let tempStreak = 0;
+
+            const maxTotalPossible = TOTAL_DAYS * TOTAL_TASKS_PER_DAY;
+
+            for (let day = 1; day <= TOTAL_DAYS; day++) {
+                const count = (appData[day] || []).length;
+                totalTasksDone += count;
+
+                if (count >= 9) {
+                    tempStreak++;
+                    if (tempStreak > bestStreak) {
+                        bestStreak = tempStreak;
+                    }
+                } else {
+                    tempStreak = 0;
+                }
+            }
+
+            let activeStreak = 0;
+            for (let day = TOTAL_DAYS; day >= 1; day--) {
+                const count = (appData[day] || []).length;
+                if (count >= 9) {
+                    activeStreak++;
+                } else if (count === 0 && day === TOTAL_DAYS) {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            const overallPercent = Math.round((totalTasksDone / maxTotalPossible) * 100);
+
+            document.getElementById('current-streak').textContent = activeStreak;
+            document.getElementById('header-streak').textContent = activeStreak;
+            document.getElementById('best-streak').textContent = bestStreak;
+            document.getElementById('total-completion-percent').textContent = `${overallPercent}%`;
+            document.getElementById('total-tasks-done').textContent = totalTasksDone;
+        }
+
+        function confirmReset() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        function executeReset() {
+            appData = createDefaultState();
+            saveData();
+            closeResetModal();
+            selectedDay = 1;
+            initApp();
+        }
+
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
